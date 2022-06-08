@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Festival index{% endblock %}
+
+{% block body %}
+    <h1>Festival index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Type</th>
+                <th>Image</th>
+                <th>Date_start</th>
+                <th>Date_end</th>
+                <th>Cancelled</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for festival in festivals %}
+            <tr>
+                <td>{{ festival.id }}</td>
+                <td>{{ festival.name }}</td>
+                <td>{{ festival.description }}</td>
+                <td>{{ festival.type }}</td>
+                <td>{{ festival.image }}</td>
+                <td>{{ festival.dateStart ? festival.dateStart|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ festival.dateEnd ? festival.dateEnd|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ festival.cancelled ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_festival_show', {'id': festival.id}) }}">show</a>
+                    <a href="{{ path('app_festival_edit', {'id': festival.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_festival_new') }}">Create new</a>
+{% endblock %}
