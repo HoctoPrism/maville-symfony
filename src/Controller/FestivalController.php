@@ -62,7 +62,7 @@ class FestivalController extends AbstractController
         }
     }
 
-    #[Route('/delete/{id}', name: 'app_festival_delete', methods: ['POST'])]
+    #[Route('/delete/{id}', name: 'app_festival_delete', methods: ['POST', 'DELETE'])]
     public function delete(Request $request, Festival $festival, FestivalRepository $festivalRepository): Response
     {
         $festivalRepository->remove($festival, true);        

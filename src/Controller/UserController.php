@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Form\ModifyPasswordType;
 use App\Form\RegistrationFormType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
@@ -50,7 +51,7 @@ class UserController extends AbstractController
     }
     
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, UserRepository $userRepository): Response
+    public function new(Request $request, UserRepository $userRepository, MailerInterface $mailer): Response
     {
         $data = json_decode($request->getContent(), true);
         $user = new User();
@@ -73,7 +74,7 @@ class UserController extends AbstractController
             ->subject('Inscription à la plateforme Ma ville')
             ->html($html);
 
-            $this->mailer->send($email);
+            $mailer->send($email);
 
             return new Response($this->serializeService->SerializeGetLatest($this->userRepository));
         } else {
@@ -105,49 +106,49 @@ class UserController extends AbstractController
         return new JsonResponse(['success' => true]);
     }
 
-        // Reset du mot de passe
-        #[Route('/api/users/modifyPassword/{id}', name: 'user_password_modify', methods: ['PUT'])]
-        public function passwordReset(Request $request, User $user, UserPasswordHasherInterface $passwordEncoder,  UserRepository $userRepository)
-        {
-            $data = json_decode($request->getContent(), true);
-            $form = $this->createForm(ModifyPasswordType::class, $user);
-            $form->submit($data);
+    // Reset du mot de passe
+    #[Route('/modifyPassword/{id}', name: 'user_password_modify', methods: ['PUT'])]
+    public function passwordReset(Request $request, User $user, UserPasswordHasherInterface $passwordEncoder,  UserRepository $userRepository)
+    {
+        $data = json_decode($request->getContent(), true);
+        $form = $this->createForm(ModifyPasswordType::class, $user);
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('newPassword')->getData() === $form->get('confirmPassword')->getData()) {
+                $password = $passwordEncoder->hashPassword($user, $form->get('newPassword')->getData());
+                $user->setPassword($password);
+                $userRepository->add($user, true);
+
+                $html = $this->renderView('user/emailConfirmPasswordChange.html.twig', [
+                    'person' => $user,
+                ]);
     
-            if ($form->isSubmitted() && $form->isValid()) {
-                if ($form->get('newPassword')->getData() === $form->get('confirmPassword')->getData()) {
-                    $password = $passwordEncoder->hashPassword($user, $form->get('newPassword')->getData());
-                    $user->setPassword($password);
-                    $userRepository->add($user, true);
+                $email = (new Email())
+                    ->from($_ENV['MailAdmin'])
+                    ->to($_ENV['MailAdmin'])
+                    ->subject('Changement de mot de passe sur la plateforme Replay')
+                    ->html($html);
     
-                    $html = $this->renderView('user/emailConfirmPasswordChange.html.twig', [
-                        'person' => $user,
-                    ]);
-        
-                    $email = (new Email())
-                        ->from($_ENV['MailAdmin'])
-                        ->to($_ENV['MailAdmin'])
-                        ->subject('Changement de mot de passe sur la plateforme Replay')
-                        ->html($html);
-        
-        
-                    $this->mailer->send($email);
     
-                    return new JsonResponse(['success' => true]);
-    
-                } else {
-                    return new JsonResponse(['newPassword' => 'les mots de passe doivent correspondre'], 400,
-                        ['Content-Type', 'application/json']);
-                }
+                $this->mailer->send($email);
+
+                return new JsonResponse(['success' => true]);
+
             } else {
-                if ($form->get('newPassword')->getData() != $form->get('confirmPassword')->getData()) {
-                    return new JsonResponse(
-                        [
-                            'oldPassword' => "Mot de passe actuel invalide",
-                            'newPassword' => 'les mots de passe doivent correspondre'
-                        ], 400, ['Content-Type', 'application/json']);
-                } else {
-                    return new JsonResponse($this->formService->getFormErrors($form), 400, ['Content-Type', 'application/json']);
-                }
+                return new JsonResponse(['newPassword' => 'les mots de passe doivent correspondre'], 400,
+                    ['Content-Type', 'application/json']);
+            }
+        } else {
+            if ($form->get('newPassword')->getData() != $form->get('confirmPassword')->getData()) {
+                return new JsonResponse(
+                    [
+                        'oldPassword' => "Mot de passe actuel invalide",
+                        'newPassword' => 'les mots de passe doivent correspondre'
+                    ], 400, ['Content-Type', 'application/json']);
+            } else {
+                return new JsonResponse($this->formService->getFormErrors($form), 400, ['Content-Type', 'application/json']);
             }
         }
+    }
 }
