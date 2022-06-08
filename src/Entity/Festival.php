@@ -11,66 +11,70 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=FestivalRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['festival']],
+    denormalizationContext: ['groups' => ['festival']],
+)]
 class Festival
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"read", "write"})
      */
+    #[Groups("festival")]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"read", "write"})
      * @Assert\NotNull( message = "Veuillez renseigner un nom")
      */
+    #[Groups("festival")]
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"read", "write"})
      */
+    #[Groups("festival")]
     private $description;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
-     * @Groups({"read", "write"})
      */
+    #[Groups("festival")]
     private $type;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"read", "write"})
-     */
-    private $image;
-
-    /**
      * @ORM\Column(type="datetime")
-     * @Groups({"read", "write"})
      * @Assert\NotNull( message = "Veuillez renseigner une date de début")
      */
-    private $date_start;
+    #[Groups("festival")]
+    private $dateStart;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"read", "write"})
      * @Assert\NotNull( message = "Veuillez renseigner une date de fin")
      */
-    private $date_end;
+    #[Groups("festival")]
+    private $dateEnd;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups({"read", "write"})
      */
+    #[Groups("festival")]
     private $cancelled;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[Groups("festival")]
     private $color;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="festivals")
+     */
+    #[Groups("festival")]
+    private $user;
 
     public function getId(): ?int
     {
@@ -113,38 +117,26 @@ class Festival
         return $this;
     }
 
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): self
-    {
-        $this->image = $image;
-
-        return $this;
-    }
-
     public function getDateStart(): ?\DateTimeInterface
     {
-        return $this->date_start;
+        return $this->dateStart;
     }
 
-    public function setDateStart(\DateTimeInterface $date_start): self
+    public function setDateStart(\DateTimeInterface $dateStart): self
     {
-        $this->date_start = $date_start;
+        $this->dateStart = $dateStart;
 
         return $this;
     }
 
     public function getDateEnd(): ?\DateTimeInterface
     {
-        return $this->date_end;
+        return $this->dateEnd;
     }
 
-    public function setDateEnd(\DateTimeInterface $date_end): self
+    public function setDateEnd(\DateTimeInterface $dateEnd): self
     {
-        $this->date_end = $date_end;
+        $this->dateEnd = $dateEnd;
 
         return $this;
     }
@@ -169,6 +161,18 @@ class Festival
     public function setColor(?string $color): self
     {
         $this->color = $color;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

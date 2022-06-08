@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\Festival;
+use App\Entity\User;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -17,15 +19,18 @@ class FestivalType extends AbstractType
             ->add('name', TextType::class)
             ->add('description', TextType::class)
             ->add('type', TextType::class)
-            ->add('image', TextType::class)
-            ->add('date_start', DateTimeType::class, [
+            ->add('dateStart', DateTimeType::class, [
                 'widget' => 'single_text',
             ])
-            ->add('date_end', DateTimeType::class, [
+            ->add('dateEnd', DateTimeType::class, [
                 'widget' => 'single_text',
             ])
             ->add('cancelled')
             ->add('color', TextType::class)
+            ->add('user' ,EntityType::class, [
+                'class' => User::class,
+                'required' => true
+            ]) 
         ;
     }
 
