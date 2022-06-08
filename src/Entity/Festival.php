@@ -67,6 +67,11 @@ class Festival
      */
     private $cancelled;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $color;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -152,6 +157,18 @@ class Festival
     public function setCancelled(bool $cancelled): self
     {
         $this->cancelled = $cancelled;
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(?string $color): self
+    {
+        $this->color = $color;
 
         return $this;
     }

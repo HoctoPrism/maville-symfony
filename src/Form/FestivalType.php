@@ -25,6 +25,7 @@ class FestivalType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('cancelled')
+            ->add('color', TextType::class)
         ;
     }
 

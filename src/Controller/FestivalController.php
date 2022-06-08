@@ -34,6 +34,7 @@ class FestivalController extends AbstractController
     public function new(Request $request, FestivalRepository $festivalRepository): Response
     {
         $data = json_decode($request->getContent(), true);
+        $data['cancelled'] = false;
         $festival = new Festival();
         $form = $this->createForm(FestivalType::class, $festival);
         $form->submit($data);
@@ -50,12 +51,12 @@ class FestivalController extends AbstractController
     public function edit(Request $request, Festival $festival, FestivalRepository $festivalRepository): Response
     {
         $data = json_decode($request->getContent(), true);
+        $data['cancelled'] = json_decode($data['cancelled']);
         $form = $this->createForm(FestivalType::class, $festival);
         $form->submit($data);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $festivalRepository->add($festival, true);
-
             return new JsonResponse(['success' => true]);
         } else {
             return new JsonResponse($festival, 400, ['Content-Type', 'application/json']);
