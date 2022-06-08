@@ -14,40 +14,40 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource()
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @method string getUserIdentifier()
  * @UniqueEntity("username", message="Impossible, cet utilisateur existe déjà !")
  */
-#[ApiResource]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"festival"})
      */
-    #[Groups('festival')]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Assert\NotNull( message = "Veuillez renseigner votre nom")
+     * @Groups({"festival"})
      */
-    #[Groups('festival')]
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=50)
      * @Assert\NotNull(message = "Veuillez renseigner votre prenom")
+     * @Groups({"festival"})
      */
-    #[Groups('festival')]
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255, unique=true)
      * @Assert\NotNull(message = "Veuillez renseigner email")
+     * @Groups({"festival"})
      */
-    #[Groups('festival')]
     private $username;
 
     /**
@@ -62,8 +62,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="json")
+     * @Groups({"festival"})
      */
-    #[Groups('festival')]
     private $roles = ['ROLE_USER'];
 
     /**

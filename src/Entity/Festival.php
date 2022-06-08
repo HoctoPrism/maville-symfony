@@ -9,71 +9,71 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ * @ApiResource(attributes={
+ *   "normalization_context"={"groups"={"festival"}},
+ *   "denormalization_context"={"groups"={"festival"}},
+ * })
  * @ORM\Entity(repositoryClass=FestivalRepository::class)
  */
-#[ApiResource(
-    normalizationContext: ['groups' => ['festival']],
-    denormalizationContext: ['groups' => ['festival']],
-)]
 class Festival
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotNull( message = "Veuillez renseigner un nom")
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $description;
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $type;
 
     /**
      * @ORM\Column(type="datetime")
      * @Assert\NotNull( message = "Veuillez renseigner une date de début")
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $dateStart;
 
     /**
      * @ORM\Column(type="datetime")
      * @Assert\NotNull( message = "Veuillez renseigner une date de fin")
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $dateEnd;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $cancelled;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $color;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="festivals")
+     * @Groups({"festival"})
      */
-    #[Groups("festival")]
     private $user;
 
     public function getId(): ?int
