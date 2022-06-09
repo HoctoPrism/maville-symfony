@@ -84,6 +84,12 @@ class Festival
      */
     private $tag;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Place::class, inversedBy="festival")
+     * @Groups({"festival"})
+     */
+    private $place;
+
     public function __construct()
     {
         $this->tag = new ArrayCollection();
@@ -211,6 +217,18 @@ class Festival
     public function removeTag(Tag $tag): self
     {
         $this->tag->removeElement($tag);
+
+        return $this;
+    }
+
+    public function getPlace(): ?Place
+    {
+        return $this->place;
+    }
+
+    public function setPlace(?Place $place): self
+    {
+        $this->place = $place;
 
         return $this;
     }
