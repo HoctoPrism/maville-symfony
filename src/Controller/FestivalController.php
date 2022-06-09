@@ -43,7 +43,7 @@ class FestivalController extends AbstractController
             $festivalRepository->add($festival, true);
             return new Response($this->serializeService->SerializeGetLatest($this->festivalRepository));
         } else {
-            return new JsonResponse($this->formService->getFormErrors($form), 400, ['Content-Type', 'application/json']);
+            return new JsonResponse($data);
         }
     }
 

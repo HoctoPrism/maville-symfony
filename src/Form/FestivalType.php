@@ -34,7 +34,8 @@ class FestivalType extends AbstractType
             ])
             ->add('tag', EntityType::class, [
                 'class' => Tag::class,
-                'multiple' => true
+                'multiple' => true,
+                'choice_label' => 'name'
             ])
         ;
     }

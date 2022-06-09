@@ -9,7 +9,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ApiResource()
@@ -27,14 +26,13 @@ class Tag
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=50)
-     * @Assert\NotNull(message = "Veuillez renseigner nom")
+     * @ORM\Column(type="string", length=255)
      * @Groups({"festival"})
      */
     private $name;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Festival::class, inversedBy="tags")
+     * @ORM\ManyToMany(targetEntity=Festival::class, mappedBy="tag")
      */
     private $festival;
 
@@ -72,6 +70,7 @@ class Tag
     {
         if (!$this->festival->contains($festival)) {
             $this->festival[] = $festival;
+            $festival->addTag($this);
         }
 
         return $this;
@@ -79,8 +78,11 @@ class Tag
 
     public function removeFestival(Festival $festival): self
     {
-        $this->festival->removeElement($festival);
+        if ($this->festival->removeElement($festival)) {
+            $festival->removeTag($this);
+        }
 
         return $this;
     }
+
 }

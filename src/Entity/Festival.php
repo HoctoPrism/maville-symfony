@@ -79,14 +79,16 @@ class Festival
     private $user;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Tag::class, mappedBy="festival")
+     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="festival")
+     * @Groups({"festival"})
      */
-    private $tags;
+    private $tag;
 
     public function __construct()
     {
-        $this->tags = new ArrayCollection();
+        $this->tag = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -192,16 +194,15 @@ class Festival
     /**
      * @return Collection<int, Tag>
      */
-    public function getTags(): Collection
+    public function getTag(): Collection
     {
-        return $this->tags;
+        return $this->tag;
     }
 
     public function addTag(Tag $tag): self
     {
-        if (!$this->tags->contains($tag)) {
-            $this->tags[] = $tag;
-            $tag->addFestival($this);
+        if (!$this->tag->contains($tag)) {
+            $this->tag[] = $tag;
         }
 
         return $this;
@@ -209,10 +210,9 @@ class Festival
 
     public function removeTag(Tag $tag): self
     {
-        if ($this->tags->removeElement($tag)) {
-            $tag->removeFestival($this);
-        }
+        $this->tag->removeElement($tag);
 
         return $this;
     }
+
 }
