@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Festival;
+use App\Entity\Place;
 use App\Entity\Tag;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -35,6 +36,10 @@ class FestivalType extends AbstractType
             ->add('tag', EntityType::class, [
                 'class' => Tag::class,
                 'multiple' => true,
+                'choice_label' => 'name'
+            ])
+            ->add('place', EntityType::class, [
+                'class' => Place::class,
                 'choice_label' => 'name'
             ])
         ;
